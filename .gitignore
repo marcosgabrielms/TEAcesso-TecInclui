@@ -1,0 +1,8 @@
+# Arquivos locais
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+.preview-temporaria/
+.vscode/
+node_modules/
