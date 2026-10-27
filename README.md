@@ -6,7 +6,7 @@ Projeto de Extensão Curricular I do curso de Análise e Desenvolvimento de Sist
 
 Acesse o TEAcesso: [https://marcosgabrielms.github.io/TEAcesso-TecInclui/](https://marcosgabrielms.github.io/TEAcesso-TecInclui/)
 
-O site é um protótipo de baixa fidelidade para apresentar a cartilha e apoiar a conversa com famílias. Os contatos e fluxos locais exibidos foram transcritos da cartilha v0.3 e ainda precisam de confirmação com os órgãos responsáveis.
+O site é um protótipo de baixa fidelidade para apoiar famílias de crianças e adolescentes com TEA em Teresina.
 
 ## Sobre o projeto
 
@@ -16,8 +16,8 @@ O TEAcesso busca facilitar o acesso de famílias de pessoas com Transtorno do Es
 
 - Orientações sobre os primeiros passos após o diagnóstico.
 - Informações sobre direitos e benefícios.
-- Referências da cartilha para UBS, CRAS, CeTEA-PI, SEID, Defensoria Pública e SEMEC; contatos e endereços aparecem como preliminares e devem ser confirmados antes do uso.
-- Cartilha “Caminho dos Cuidados TEA” para download em Word; validação dos dados locais ainda pendente.
+- Informações sobre UBS, CRAS, CeTEA-PI, SEID, Defensoria Pública e SEMEC.
+- Cartilha “Caminho dos Cuidados TEA” para download em PDF.
 
 ## Equipe — TecInclui
 

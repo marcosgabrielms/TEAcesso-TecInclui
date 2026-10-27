@@ -1,8 +1,8 @@
-// Metadados do arquivo Word incluído no site. O carregador dinâmico atual só aceita PDFs.
+// Metadados do arquivo PDF oferecido no site.
 export const cartilha = {
   titulo: 'Caminho dos Cuidados TEA',
-  pdfDisponivel: false,
-  arquivo: 'assets/cartilhas/Cartilha_Caminho_dos_Cuidados_TEA_v0.3.docx',
-  formato: 'docx',
+  pdfDisponivel: true,
+  arquivo: 'assets/cartilhas/Cartilha_Caminho_dos_Cuidados_TEA_v0.3.pdf',
+  formato: 'pdf',
   urlPublica: null
 };

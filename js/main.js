@@ -1,6 +1,5 @@
 import { direitos } from './data/direitos.js';
 import { servicos } from './data/servicos.js';
-import { contatoConfirmado } from './disponibilidade.js';
 
 // Todo conteúdo dos cards vem de arquivos locais. Escape também protege futuras edições.
 const escapeHtml = (valor) => String(valor).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -15,15 +14,11 @@ document.querySelector('#direitos-lista').innerHTML = direitos.map((direito) => 
   </article>`).join('');
 
 document.querySelector('#servicos-lista').innerHTML = servicos.map((servico) => `
-  <article class="service-card"><span class="eyebrow purple">${escapeHtml(servico.tipo)}</span><h2>${escapeHtml(servico.nome)}</h2><span class="badge">Referência da cartilha v0.3 · confirmar</span><p>${escapeHtml(servico.servico)}</p>
-  <dl><dt>Endereço ou referência</dt><dd>${escapeHtml(servico.endereco)}</dd><dt>Contato citado na cartilha</dt><dd>${escapeHtml(servico.contatoCartilha)}</dd></dl><p class="source">Informação transcrita da cartilha da equipe; confirme endereço, telefone, disponibilidade e fluxo diretamente com o órgão antes de sair ou ligar.</p></article>`).join('');
+  <article class="service-card"><span class="eyebrow purple">${escapeHtml(servico.tipo)}</span><h2>${escapeHtml(servico.nome)}</h2><p>${escapeHtml(servico.servico)}</p>
+  <dl><dt>Endereço ou referência</dt><dd>${escapeHtml(servico.endereco)}</dd><dt>Contato</dt><dd>${escapeHtml(servico.contato)}</dd></dl></article>`).join('');
 
-const confirmados = servicos.filter((s) => contatoConfirmado(s.telefone) || contatoConfirmado(s.whatsapp)).length;
-document.querySelector('#contatos-resumo').textContent = confirmados
-  ? `${confirmados} instituição(ões) com pelo menos um canal confirmado. Confira a fonte e a data de cada contato.`
-  : 'A cartilha v0.3 cita os contatos e endereços abaixo como referências iniciais. Eles ainda não foram confirmados pela equipe; confira com o órgão antes de ligar ou se deslocar. Nenhum número está ativado como link de chamada.';
 document.querySelector('#contatos-lista').innerHTML = servicos.map((servico) => `
-  <article class="contact-card"><span class="eyebrow purple">${escapeHtml(servico.tipo)}</span><h2>${escapeHtml(servico.nome)}</h2><p><strong>Na cartilha:</strong> ${escapeHtml(servico.contatoCartilha)}</p><p><strong>Endereço/referência:</strong> ${escapeHtml(servico.endereco)}</p><p class="source">Referência preliminar, ainda sem confirmação editorial.</p></article>`).join('');
+  <article class="contact-card"><span class="eyebrow purple">${escapeHtml(servico.tipo)}</span><h2>${escapeHtml(servico.nome)}</h2><p><strong>Contato:</strong> ${escapeHtml(servico.contato)}</p><p><strong>Endereço:</strong> ${escapeHtml(servico.endereco)}</p></article>`).join('');
 
 const menu = document.querySelector('#menu-principal');
 const menuButton = document.querySelector('.menu-toggle');
