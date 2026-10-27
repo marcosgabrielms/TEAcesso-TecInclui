@@ -1,7 +1,6 @@
 import { direitos } from './data/direitos.js';
 import { servicos } from './data/servicos.js';
-import { cartilha } from './data/cartilhas.js';
-import { contatoConfirmado, carregarPdf, linkCompartilhamento } from './disponibilidade.js';
+import { contatoConfirmado } from './disponibilidade.js';
 
 // Todo conteúdo dos cards vem de arquivos locais. Escape também protege futuras edições.
 const escapeHtml = (valor) => String(valor).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -16,22 +15,15 @@ document.querySelector('#direitos-lista').innerHTML = direitos.map((direito) => 
   </article>`).join('');
 
 document.querySelector('#servicos-lista').innerHTML = servicos.map((servico) => `
-  <article class="service-card"><span class="eyebrow purple">${escapeHtml(servico.tipo)}</span><h2>${escapeHtml(servico.nome)}</h2><span class="badge">Informações não verificadas</span><p>${escapeHtml(servico.observacao)}</p>
-  <dl><dt>Endereço e horário</dt><dd>Não confirmados. Aguardando validação.</dd><dt>Agendamento e documentos</dt><dd>Fluxo de atendimento não confirmado.</dd></dl></article>`).join('');
-
-function canalMarkup(canal, tipo) {
-  if (!contatoConfirmado(canal)) return `<p class="small">${tipo === 'telefone' ? 'Telefone' : 'WhatsApp'}: aguardando confirmação.</p>`;
-  const href = tipo === 'telefone' ? `tel:+${canal.valor}` : `https://wa.me/${canal.valor}`;
-  const texto = tipo === 'telefone' ? `Ligar: +${canal.valor}` : 'Abrir WhatsApp (nova aba)';
-  return `<div><a class="button secondary" href="${href}" ${tipo === 'whatsapp' ? 'target="_blank" rel="noopener noreferrer"' : ''}>${texto}</a><p class="source">Confirmado em ${escapeHtml(canal.verificadoEm)} · ${externo(canal.fonte, 'Fonte do contato')}</p></div>`;
-}
+  <article class="service-card"><span class="eyebrow purple">${escapeHtml(servico.tipo)}</span><h2>${escapeHtml(servico.nome)}</h2><span class="badge">Referência da cartilha v0.3 · confirmar</span><p>${escapeHtml(servico.servico)}</p>
+  <dl><dt>Endereço ou referência</dt><dd>${escapeHtml(servico.endereco)}</dd><dt>Contato citado na cartilha</dt><dd>${escapeHtml(servico.contatoCartilha)}</dd></dl><p class="source">Informação transcrita da cartilha da equipe; confirme endereço, telefone, disponibilidade e fluxo diretamente com o órgão antes de sair ou ligar.</p></article>`).join('');
 
 const confirmados = servicos.filter((s) => contatoConfirmado(s.telefone) || contatoConfirmado(s.whatsapp)).length;
 document.querySelector('#contatos-resumo').textContent = confirmados
   ? `${confirmados} instituição(ões) com pelo menos um canal confirmado. Confira a fonte e a data de cada contato.`
-  : 'Ainda não há contatos confirmados neste MVP. Telefones e números de WhatsApp da base original foram omitidos para evitar ligações ou mensagens para canais incorretos.';
+  : 'A cartilha v0.3 cita os contatos e endereços abaixo como referências iniciais. Eles ainda não foram confirmados pela equipe; confira com o órgão antes de ligar ou se deslocar. Nenhum número está ativado como link de chamada.';
 document.querySelector('#contatos-lista').innerHTML = servicos.map((servico) => `
-  <article class="contact-card"><span class="eyebrow purple">${escapeHtml(servico.tipo)}</span><h2>${escapeHtml(servico.nome)}</h2><p>Disponibilidade dos canais de atendimento:</p><div class="contact-actions">${canalMarkup(servico.telefone, 'telefone')}${canalMarkup(servico.whatsapp, 'whatsapp')}</div></article>`).join('');
+  <article class="contact-card"><span class="eyebrow purple">${escapeHtml(servico.tipo)}</span><h2>${escapeHtml(servico.nome)}</h2><p><strong>Na cartilha:</strong> ${escapeHtml(servico.contatoCartilha)}</p><p><strong>Endereço/referência:</strong> ${escapeHtml(servico.endereco)}</p><p class="source">Referência preliminar, ainda sem confirmação editorial.</p></article>`).join('');
 
 const menu = document.querySelector('#menu-principal');
 const menuButton = document.querySelector('.menu-toggle');
@@ -103,46 +95,3 @@ document.querySelector('.skip-link').addEventListener('click', (event) => {
 });
 window.addEventListener('hashchange', () => navegar());
 navegar(false);
-
-async function prepararCartilha() {
-  const bloco = document.querySelector('.booklet-card');
-  bloco.querySelector('h2').textContent = cartilha.titulo;
-  const pdf = await carregarPdf(cartilha);
-  if (!pdf) {
-    document.querySelector('#cartilha-status').textContent = 'A cartilha está em preparação. O download e o compartilhamento ficarão disponíveis quando o PDF revisado for publicado.';
-    return;
-  }
-  bloco.querySelector('.badge').textContent = 'PDF disponível';
-  bloco.querySelector('h2 + p').textContent = 'Cartilha revisada, disponível em PDF para consulta.';
-  bloco.querySelector('.booklet-cover small').textContent = 'MATERIAL DE APOIO';
-  const url = URL.createObjectURL(pdf);
-  const acoes = document.querySelector('#cartilha-acoes');
-  acoes.replaceChildren();
-  const download = document.createElement('a');
-  download.className = 'button primary';
-  download.href = url;
-  download.download = cartilha.arquivo.split('/').pop();
-  download.textContent = 'Baixar PDF';
-  acoes.append(download);
-  const compartilhamento = linkCompartilhamento(cartilha);
-  if (compartilhamento) {
-    const compartilhar = document.createElement('a');
-    compartilhar.className = 'button secondary';
-    compartilhar.href = compartilhamento;
-    compartilhar.target = '_blank';
-    compartilhar.rel = 'noopener noreferrer';
-    compartilhar.textContent = 'Compartilhar por WhatsApp (nova aba)';
-    acoes.append(compartilhar);
-  } else {
-    const indisponivel = document.createElement('button');
-    indisponivel.className = 'button secondary';
-    indisponivel.disabled = true;
-    indisponivel.textContent = 'Compartilhar por WhatsApp';
-    acoes.append(indisponivel);
-  }
-  document.querySelector('#cartilha-status').textContent = compartilhamento
-    ? 'O compartilhamento abre o WhatsApp com o link público da cartilha. Você escolhe o destinatário e confirma o envio.'
-    : 'PDF disponível. O compartilhamento aguarda um endereço público confirmado; links do Live Server não funcionam em outros dispositivos.';
-  // A URL do Blob vive com o documento e é liberada automaticamente ao fechá-lo.
-}
-prepararCartilha();
